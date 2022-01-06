@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:visual_notes/screens/add_visual_note_screen.dart';
 
 class VisualNotesScreen extends StatefulWidget {
   const VisualNotesScreen({Key? key, required this.title}) : super(key: key);
@@ -34,7 +35,9 @@ class _VisualNotesScreenState extends State<VisualNotesScreen> {
             ),
             TextButton.icon(
               icon: const Icon(Icons.add),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(AddVisualNoteScreen.routeName);
+              },
               label: const Text("Add Visual Note"),
             ),
           ],

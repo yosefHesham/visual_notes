@@ -15,18 +15,24 @@ class VisualNoteField extends StatelessWidget {
   String? Function(String?)? validator;
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      validator: validator,
-      controller: controller,
-      onFieldSubmitted: onSubmit,
-      decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.transparent),
-          ),
-          filled: true,
-          hintText: hintText,
-          fillColor: Theme.of(context).colorScheme.secondary),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5.0),
+      child: TextFormField(
+        validator: validator,
+        controller: controller,
+        onFieldSubmitted: onSubmit,
+        decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide:
+                  BorderSide(color: Theme.of(context).colorScheme.primary),
+            ),
+            filled: true,
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Colors.black),
+            fillColor:
+                Theme.of(context).colorScheme.primaryVariant.withOpacity(.5)),
+      ),
     );
   }
 }
