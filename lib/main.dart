@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:visual_notes/visual_notes_screen.dart';
+import 'package:visual_notes/screens/add_visual_note_screen.dart';
+import 'package:visual_notes/screens/visual_notes_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const VisualNotesScreen(title: "your notes"),
+      routes: {
+        AddVisualNoteScreen.routeName: (_) => const AddVisualNoteScreen()
+      },
     );
   }
 }
