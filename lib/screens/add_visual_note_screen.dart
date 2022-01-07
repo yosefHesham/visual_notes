@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
 import 'package:visual_notes/helpers/visual_note_validator.dart';
+import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/utils/visual_note_field.dart';
+import 'package:visual_notes/visual_note_model.dart';
 
 class AddVisualNoteScreen extends StatefulWidget {
   static const routeName = "/add_note";
@@ -14,11 +20,13 @@ class AddVisualNoteScreen extends StatefulWidget {
 final _titleController = TextEditingController();
 final _descriptionController = TextEditingController();
 String _status = "Open";
+File? image;
 
 class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   @override
   Widget build(BuildContext context) {
     final sizer = SizeHelper(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -44,22 +52,34 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                 children: [
                   Container(
                     height: sizer.height * .4,
+                    width: sizer.width,
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
                           color:
                               Theme.of(context).colorScheme.secondaryVariant),
                     ),
-                    child: Center(
-                      child: TextButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.add_a_photo),
-                        label: const Text("add photo"),
-                      ),
-                    ),
+                    child: image == null
+                        ? chooseImageButton("Add Photo")
+                        : Stack(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            children: [
+                              Image.file(
+                                image!,
+                                fit: BoxFit.fill,
+                                width: sizer.width,
+                              ),
+                              Positioned(
+                                top: sizer.height * .36,
+                                child: Container(
+                                    color: Colors.white,
+                                    child: chooseImageButton("Change Photo")),
+                              )
+                            ],
+                          ),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   VisualNoteField(
                     hintText: "Note title",
@@ -112,7 +132,18 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                       width: sizer.width * .7,
                       height: sizer.width * .1,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await Provider.of<VisualNoteProvider>(context,
+                                  listen: false)
+                              .addNote(
+                            VisualNote(
+                                title: _titleController.text,
+                                picture: image!,
+                                status: _status,
+                                description: _descriptionController.text),
+                          );
+                          Navigator.of(context).pop();
+                        },
                         child: const Text(
                           "Add Note",
                           style: TextStyle(
@@ -130,5 +161,67 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
         ),
       ),
     );
+  }
+
+  Center chooseImageButton(String title) {
+    return Center(
+      child: TextButton.icon(
+        onPressed: () {
+          chooseImage();
+        },
+        icon: const Icon(Icons.add_a_photo),
+        label: Text(title),
+      ),
+    );
+  }
+
+  _getFromGallery() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+      setState(() {});
+      Navigator.of(context).pop();
+    }
+  }
+
+  _getFromCamera() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+      setState(() {});
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> chooseImage() async {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text("Choose by"),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  _getFromCamera();
+                },
+                child: Text("Camera"),
+              ),
+              TextButton(
+                onPressed: () async {
+                  _getFromGallery();
+                },
+                child: Text("Gallery"),
+              )
+            ],
+          );
+        });
   }
 }
