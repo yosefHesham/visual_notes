@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
 import 'package:visual_notes/helpers/visual_note_validator.dart';
+import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/utils/visual_note_field.dart';
+import 'package:visual_notes/visual_note_model.dart';
 
 class AddVisualNoteScreen extends StatefulWidget {
   static const routeName = "/add_note";
@@ -59,7 +62,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                     child: image == null
                         ? chooseImageButton("Add Photo")
                         : Stack(
-                            overflow: Overflow.visible,
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
                             children: [
                               Image.file(
                                 image!,
@@ -129,7 +132,18 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                       width: sizer.width * .7,
                       height: sizer.width * .1,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await Provider.of<VisualNoteProvider>(context,
+                                  listen: false)
+                              .addNote(
+                            VisualNote(
+                                title: _titleController.text,
+                                picture: image!,
+                                status: _status,
+                                description: _descriptionController.text),
+                          );
+                          Navigator.of(context).pop();
+                        },
                         child: const Text(
                           "Add Note",
                           style: TextStyle(
