@@ -37,7 +37,7 @@ class _VisualNoteImageState extends State<VisualNoteImage> {
       child: image == null
           ? chooseImageButton("Add Photo")
           : Stack(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
+              clipBehavior: Clip.none,
               children: [
                 Image.file(
                   image!,
