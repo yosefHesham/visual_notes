@@ -63,6 +63,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
     );
   }
 
+  /// this is the landscape layout
   Widget buildLandscape(BuildContext context, SizeHelper sizer) {
     return Column(
       children: [
@@ -76,7 +77,6 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
             const SizedBox(
               width: 20,
             ),
-            // Expanded(Col buildForm(context)),
             Expanded(
               child: Column(
                 children: [
@@ -120,6 +120,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
     );
   }
 
+  // portrait layout
   Column buildPortrait(BuildContext context, SizeHelper sizer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,6 +217,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   }
 
   Future<void> addNote(BuildContext context) async {
+    // useer cannot submit without choosing an image
     if (image == null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Please pick an image")));

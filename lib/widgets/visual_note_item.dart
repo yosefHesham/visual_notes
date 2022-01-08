@@ -30,7 +30,7 @@ class VisualNoteItem extends StatelessWidget {
         key: UniqueKey(),
         child: Container(
           width: sizer.width,
-          height: sizer.height * .25,
+          height: sizer.isLandscape ? sizer.height * .5 : sizer.height * .25,
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
@@ -47,10 +47,18 @@ class VisualNoteItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Image.file(
-                  visualNote.picture,
-                  height: sizer.height * .25,
-                  fit: BoxFit.cover,
+                child: InkWell(
+                  onTap: () {
+                    // click on the picture to view on full screen
+                    showPictureInFullScreen(context);
+                  },
+                  child: Image.file(
+                    visualNote.picture,
+                    height: sizer.isLandscape
+                        ? sizer.height * .5
+                        : sizer.height * .25,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -98,9 +106,13 @@ class VisualNoteItem extends StatelessWidget {
     );
   }
 
+  void showPictureInFullScreen(BuildContext context) {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => Image.file(visualNote.picture)));
+  }
+
   Widget buildVisualNoteDetails(BuildContext context) {
-    return Flex(
-      direction: Axis.vertical,
+    return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -128,10 +140,7 @@ class VisualNoteItem extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          height: 10,
-        ),
-        const Divider(
-          color: Colors.black,
+          height: 5,
         ),
         Text(
           "Date Created: ",

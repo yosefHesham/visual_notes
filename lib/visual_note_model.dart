@@ -20,6 +20,7 @@ class VisualNote {
       this.dateCreated,
       required this.description});
 
+  // converting the instance to a Map so it can be stored into the DB
   toMap() {
     return {
       columnTitle: title,
@@ -31,6 +32,7 @@ class VisualNote {
     };
   }
 
+  // used when getting our data from db, convert it from map to a VisualNote instance
   VisualNote.fromMap(Map<String, dynamic> visualNoteMap) {
     id = visualNoteMap[columnId];
     title = visualNoteMap[columnTitle];
