@@ -17,15 +17,17 @@ class VisualNoteImage extends StatefulWidget {
   _VisualNoteImageState createState() => _VisualNoteImageState();
 }
 
-class _VisualNoteImageState extends State<VisualNoteImage> {
-  File? image;
+File? image;
 
+class _VisualNoteImageState extends State<VisualNoteImage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // if its not null => then the user is editing the note
-    // else => adding
-    image = widget.image;
+    // else =>
+    if (widget.image != null) {
+      image = widget.image;
+    }
   }
 
   @override
