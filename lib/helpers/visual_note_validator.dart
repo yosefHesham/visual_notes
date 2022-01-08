@@ -1,5 +1,3 @@
-import 'package:visual_notes/helpers/visual_db.dart';
-
 class VisualNoteValidator {
   String field;
   VisualNoteValidator(this.field);

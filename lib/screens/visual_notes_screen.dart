@@ -2,22 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
-import 'package:visual_notes/helpers/visual_db.dart';
 import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/screens/add_visual_note_screen.dart';
 import 'package:visual_notes/visual_note_model.dart';
 
 class VisualNotesScreen extends StatefulWidget {
   const VisualNotesScreen({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -42,6 +32,7 @@ class _VisualNotesScreenState extends State<VisualNotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context).pushNamed(AddVisualNoteScreen.routeName);

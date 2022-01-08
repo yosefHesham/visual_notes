@@ -6,8 +6,6 @@ import 'package:visual_notes/screens/add_visual_note_screen.dart';
 import 'package:visual_notes/screens/visual_notes_screen.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await VisualDBHelper.dbInstance.openDb();
   runApp(const MyApp());
 }
 

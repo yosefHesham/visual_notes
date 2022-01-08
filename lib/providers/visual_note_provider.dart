@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/visual_db.dart';
 import 'package:visual_notes/visual_note_model.dart';
 

@@ -17,12 +17,11 @@ class AddVisualNoteScreen extends StatefulWidget {
   _AddVisualNoteScreenState createState() => _AddVisualNoteScreenState();
 }
 
-final _titleController = TextEditingController();
-final _descriptionController = TextEditingController();
-String _status = "Open";
-File? image;
-
 class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  String _status = "Open";
+  File? image;
   @override
   Widget build(BuildContext context) {
     final sizer = SizeHelper(context);
@@ -206,7 +205,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
         context: context,
         builder: (ctx) {
           return AlertDialog(
-            title: Text("Choose by"),
+            title: const Text("Choose by"),
             actions: [
               TextButton(
                 onPressed: () async {

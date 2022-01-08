@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:visual_notes/visual_note_model.dart';
 
 String tableName = "visualnotes";
@@ -13,31 +12,29 @@ String columnDateCreated = "dateCreated";
 String columnLastUpdated = "lastUpdated";
 
 class VisualDBHelper {
-  // Future<String> get path => _getDbPath();
-
-  // Future<String> _getDbPath() async {
-  //   var databasesPath = await getDatabasesPath();
-  //   String path = join(databasesPath, 'visual_notes.db');
-  //   return path;
-  // }
-
-  // private named contructor so we can create single instance
   VisualDBHelper._internal();
 
-  // this is the only instance will be used through the app
   static final VisualDBHelper dbInstance = VisualDBHelper._internal();
 
   static Database? _database;
   final _path = "visual_notes.db";
 
-  Future openDb() async {
+  Future<Database> get database async {
+    if (_database != null) {
+      return _database!;
+    }
+    _database = await _openDb();
+    return _database!;
+  }
+
+  Future _openDb() async {
     try {
-      _database ??= await openDatabase(_path, version: 1,
+      _database = await openDatabase(_path, version: 1,
           onCreate: (Database db, int version) async {
         await _createTable(db);
       });
     } catch (e) {
-      print(e.toString());
+      rethrow;
     }
   }
 
@@ -57,8 +54,7 @@ CREATE TABLE  $tableName (
   }
 
   Future<VisualNote> insertNote(VisualNote note) async {
-    Database db = _database!;
-    note.id = await db.insert(tableName, note.toMap());
+    note.id = await _database!.insert(tableName, note.toMap());
     return note;
   }
 
