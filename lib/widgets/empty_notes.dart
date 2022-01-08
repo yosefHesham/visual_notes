@@ -14,7 +14,8 @@ class EmptyNotesWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           const Text(
-              'You dont have any viual note yet , click button below to add',
+              'You dont have any visual note yet , click button below to add',
+              maxLines: 3,
               textAlign: TextAlign.center),
           TextButton.icon(
             icon: const Icon(Icons.add),

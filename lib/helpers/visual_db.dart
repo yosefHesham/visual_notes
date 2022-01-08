@@ -19,12 +19,10 @@ class VisualDBHelper {
   final _path = "visual_notes.db";
 
   Future<Database> get database async {
-    print("Openning database");
     if (_database != null) {
       return _database!;
     }
     _database = await _openDb();
-    print(_database);
     return _database!;
   }
 
@@ -34,7 +32,6 @@ class VisualDBHelper {
         _path,
         version: 1,
         onCreate: (db, version) {
-          print("Creating");
           db.execute('''
 CREATE TABLE  $tableName ( 
       $columnId integer primary key autoincrement, 
