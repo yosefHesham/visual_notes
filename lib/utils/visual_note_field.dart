@@ -1,14 +1,16 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 
 class VisualNoteField extends StatelessWidget {
   VisualNoteField(
-      {required this.hintText,
+      {this.hintText,
       required this.controller,
       required this.validator,
       this.onSubmit,
       Key? key})
       : super(key: key);
-  String hintText;
+  String? hintText;
   TextEditingController controller;
 
   void Function(String)? onSubmit;

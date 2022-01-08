@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/visual_db.dart';
 import 'package:visual_notes/visual_note_model.dart';
 
@@ -25,5 +24,28 @@ class VisualNoteProvider extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> deleteNote(VisualNote visualNote) async {
+    try {
+      notes.remove(visualNote);
+      await _db.deleteNote(visualNote.id!);
+    } catch (e) {
+      int noteIndex = notes.indexOf(visualNote);
+      notes.insert(noteIndex, visualNote);
+      rethrow;
+    }
+    notifyListeners();
+  }
+
+  Future<void> editNote(VisualNote visualNote) async {
+    try {
+      int indx = notes.indexWhere((element) => element.id == visualNote.id);
+      notes[indx] = visualNote;
+      await _db.updateNote(visualNote);
+    } catch (e) {
+      rethrow;
+    }
+    notifyListeners();
   }
 }
