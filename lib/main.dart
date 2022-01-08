@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light,
           ),
         ),
-        home: const VisualNotesScreen(title: "your notes"),
+        home: const VisualNotesScreen(title: "Your notes"),
         routes: {
           AddVisualNoteScreen.routeName: (_) => const AddVisualNoteScreen()
         },

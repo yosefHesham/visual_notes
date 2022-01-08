@@ -52,7 +52,7 @@ class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             VisualNoteImage(
-              () {},
+              getImage,
               image: widget.visualNote.picture,
             ),
             Form(

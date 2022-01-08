@@ -28,18 +28,11 @@ class VisualDBHelper {
 
   Future<Database> _openDb() async {
     try {
-      return await openDatabase(_path, version: 1,
-          onCreate: (Database db, int version) async {
-        await _createTable(db);
-      });
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<void> _createTable(Database db) async {
-    if (!await databaseExists(_path)) {
-      await db.execute('''
+      return await openDatabase(
+        _path,
+        version: 1,
+        onCreate: (db, version) {
+          db.execute('''
 CREATE TABLE  $tableName ( 
       $columnId integer primary key autoincrement, 
       $columnTitle text not null,
@@ -49,6 +42,10 @@ CREATE TABLE  $tableName (
       $columnDescription text not null,
       $columnLastUpdated text)
     ''');
+        },
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 
