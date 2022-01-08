@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.visual_notes">
+    <uses-permission android:name="android.permission.CAMERA" />
+
    <application
         android:label="visual_notes"
         android:icon="@mipmap/ic_launcher">
