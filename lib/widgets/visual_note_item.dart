@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
 import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/visual_note_model.dart';
+import 'package:visual_notes/widgets/edit_note_sheet.dart';
 
 class VisualNoteItem extends StatelessWidget {
   const VisualNoteItem(
@@ -55,66 +56,126 @@ class VisualNoteItem extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              Expanded(
-                child: Flex(
-                  direction: Axis.vertical,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      visualNote.title,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      visualNote.description,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
+              buildVisualNoteDetails(context),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (ctx) {
+                            return EditNoteBottomSheet(visualNote: visualNote);
+                          });
+                    },
+                    icon: const Icon(Icons.edit, color: Colors.pink),
+                  ),
+                  SizedBox(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 15.0, bottom: 15.0),
+                      child: Text(
+                        visualNote.status,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                            color: visualNote.status == "Open"
+                                ? Theme.of(context).colorScheme.secondary
+                                : Colors.green),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(DateFormat('y, d MMM, ')
-                        .add_jm()
-                        .format(DateTime.parse(visualNote.dateCreated))
-                        .toString()),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: sizer.height * .25,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 15.0, bottom: 15.0),
-                    child: Text(
-                      visualNote.status,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                          color: visualNote.status == "Open"
-                              ? Theme.of(context).colorScheme.secondary
-                              : Colors.green),
-                    ),
                   ),
-                ),
-              ),
+                ],
+              )
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Expanded buildVisualNoteDetails(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            visualNote.title,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primaryVariant,
+                fontWeight: FontWeight.bold,
+                fontSize: 22),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            visualNote.description,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: Colors.black54,
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(
+            color: Colors.black,
+          ),
+          Text(
+            "Date Created: ",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+            ),
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Text(
+            DateFormat('y, d MMM, ')
+                .add_jm()
+                .format(
+                  DateTime.parse(visualNote.dateCreated!),
+                )
+                .toString(),
+          ),
+          visualNote.lastUpdated == null
+              ? const SizedBox.shrink()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Last update",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      DateFormat('y, d MMM, ')
+                          .add_jm()
+                          .format(
+                            DateTime.parse(visualNote.lastUpdated!),
+                          )
+                          .toString(),
+                    ),
+                  ],
+                ),
+        ],
       ),
     );
   }

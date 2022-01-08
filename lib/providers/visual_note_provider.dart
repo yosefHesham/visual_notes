@@ -37,4 +37,15 @@ class VisualNoteProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> editNote(VisualNote visualNote) async {
+    try {
+      int indx = notes.indexWhere((element) => element.id == visualNote.id);
+      notes[indx] = visualNote;
+      await _db.updateNote(visualNote);
+    } catch (e) {
+      rethrow;
+    }
+    notifyListeners();
+  }
 }

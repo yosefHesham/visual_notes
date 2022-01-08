@@ -7,7 +7,7 @@ class VisualNote {
   late String title;
   late File picture;
   late String description;
-  late String dateCreated = DateTime.now().toIso8601String();
+  String? dateCreated = DateTime.now().toIso8601String();
   late String? lastUpdated;
   late String status;
 
@@ -17,6 +17,7 @@ class VisualNote {
       required this.picture,
       required this.status,
       this.lastUpdated,
+      this.dateCreated,
       required this.description});
 
   toMap() {

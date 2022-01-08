@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
 import 'package:visual_notes/helpers/visual_note_validator.dart';
 import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/utils/visual_note_field.dart';
+import 'package:visual_notes/utils/visual_note_image.dart';
 import 'package:visual_notes/visual_note_model.dart';
 
 class AddVisualNoteScreen extends StatefulWidget {
@@ -22,6 +22,10 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   final _descriptionController = TextEditingController();
   String _status = "Open";
   File? image;
+
+  void getImage(File img) {
+    image = img;
+  }
 
   final _formKey = GlobalKey<FormState>();
   @override
@@ -51,34 +55,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: sizer.height * .4,
-                    width: sizer.width,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1,
-                          color:
-                              Theme.of(context).colorScheme.secondaryVariant),
-                    ),
-                    child: image == null
-                        ? chooseImageButton("Add Photo")
-                        : Stack(
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            children: [
-                              Image.file(
-                                image!,
-                                fit: BoxFit.fill,
-                                width: sizer.width,
-                              ),
-                              Positioned(
-                                top: sizer.height * .36,
-                                child: Container(
-                                    color: Colors.white,
-                                    child: chooseImageButton("Change Photo")),
-                              )
-                            ],
-                          ),
-                  ),
+                  VisualNoteImage(getImage),
                   const SizedBox(
                     height: 20,
                   ),
@@ -178,30 +155,6 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
             description: _descriptionController.text),
       );
       Navigator.of(context).pop();
-    }
-  }
-
-  Center chooseImageButton(String title) {
-    return Center(
-      child: TextButton.icon(
-        onPressed: () {
-          _openCamera();
-        },
-        icon: const Icon(Icons.add_a_photo),
-        label: Text(title),
-      ),
-    );
-  }
-
-  _openCamera() async {
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {});
     }
   }
 }
