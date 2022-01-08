@@ -25,4 +25,17 @@ class VisualNoteProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> deleteNote(VisualNote visualNote) async {
+    try {
+      await _db.deleteNote(visualNote.id!);
+      notes.remove(visualNote);
+      notifyListeners();
+    } catch (e) {
+      int noteIndex = notes.indexOf(visualNote);
+      notes.insert(noteIndex, visualNote);
+      notifyListeners();
+      rethrow;
+    }
+  }
 }
