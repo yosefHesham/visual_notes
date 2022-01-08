@@ -19,9 +19,12 @@ class VisualNoteItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Dismissible(
-        onDismissed: (_) {
-          Provider.of<VisualNoteProvider>(context, listen: false)
-              .deleteNote(visualNote);
+        direction: DismissDirection.startToEnd,
+        onDismissed: (_) async {
+          await deleteItem(context);
+        },
+        confirmDismiss: (_) async {
+          return await showConfirmDeleteDialog(context);
         },
         key: UniqueKey(),
         child: Container(
@@ -112,6 +115,40 @@ class VisualNoteItem extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<bool?> showConfirmDeleteDialog(BuildContext context) async {
+    return await showDialog<bool>(
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("Confirm Removing ${visualNote.title} ?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text("Yes"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: const Text("No"),
+              )
+            ],
+          );
+        },
+        context: context);
+  }
+
+  Future<void> deleteItem(BuildContext context) async {
+    await Provider.of<VisualNoteProvider>(context, listen: false)
+        .deleteNote(visualNote);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${visualNote.title} is deleted"),
       ),
     );
   }

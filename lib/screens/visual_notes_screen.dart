@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:visual_notes/helpers/visual_db.dart';
 import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/screens/add_visual_note_screen.dart';
 import 'package:visual_notes/widgets/empty_notes.dart';
@@ -15,6 +16,13 @@ class VisualNotesScreen extends StatefulWidget {
 }
 
 class _VisualNotesScreenState extends State<VisualNotesScreen> {
+  @override
+  void dispose() async {
+    super.dispose();
+    var db = await VisualDBHelper.dbInstance.database;
+    await db.close();
+  }
+
   bool isLoading = false;
   @override
   void didChangeDependencies() async {

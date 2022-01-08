@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
-import 'package:visual_notes/helpers/visual_db.dart';
 import 'package:visual_notes/helpers/visual_note_validator.dart';
 import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/utils/visual_note_field.dart';
@@ -19,17 +18,12 @@ class AddVisualNoteScreen extends StatefulWidget {
 }
 
 class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
-  @override
-  void dispose() async {
-    super.dispose();
-    var db = await VisualDBHelper.dbInstance.database;
-    await db.close();
-  }
-
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   String _status = "Open";
   File? image;
+
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final sizer = SizeHelper(context);
@@ -88,48 +82,61 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  VisualNoteField(
-                    hintText: "Note title",
-                    controller: _titleController,
-                    validator: VisualNoteValidator("title").validate,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  VisualNoteField(
-                    hintText: "Note description",
-                    controller: _descriptionController,
-                    validator: VisualNoteValidator("description").validate,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    "Note Status",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondaryVariant,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DropdownButtonFormField(
-                      elevation: 2,
-                      onChanged: (value) {
-                        setState(() {
-                          _status = value as String;
-                        });
-                      },
-                      value: _status,
-                      items: const [
-                        DropdownMenuItem(
-                          value: "Open",
-                          child: Text("Open"),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        VisualNoteField(
+                          hintText: "Note title",
+                          controller: _titleController,
+                          validator: VisualNoteValidator("title").validate,
                         ),
-                        DropdownMenuItem(
-                          value: "Closed",
-                          child: Text("Closed"),
-                        )
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        VisualNoteField(
+                          hintText: "Note description",
+                          controller: _descriptionController,
+                          onSubmit: (_) async {
+                            await addNote(context);
+                          },
+                          validator:
+                              VisualNoteValidator("description").validate,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Note Status",
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryVariant,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField(
+                            elevation: 2,
+                            onChanged: (value) {
+                              setState(() {
+                                _status = value as String;
+                              });
+                            },
+                            value: _status,
+                            items: const [
+                              DropdownMenuItem(
+                                value: "Open",
+                                child: Text("Open"),
+                              ),
+                              DropdownMenuItem(
+                                value: "Closed",
+                                child: Text("Closed"),
+                              )
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -140,16 +147,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                       height: sizer.width * .1,
                       child: ElevatedButton(
                         onPressed: () async {
-                          await Provider.of<VisualNoteProvider>(context,
-                                  listen: false)
-                              .addNote(
-                            VisualNote(
-                                title: _titleController.text,
-                                picture: image!,
-                                status: _status,
-                                description: _descriptionController.text),
-                          );
-                          Navigator.of(context).pop();
+                          await addNote(context);
                         },
                         child: const Text(
                           "Add Note",
@@ -168,6 +166,19 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> addNote(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      await Provider.of<VisualNoteProvider>(context, listen: false).addNote(
+        VisualNote(
+            title: _titleController.text,
+            picture: image!,
+            status: _status,
+            description: _descriptionController.text),
+      );
+      Navigator.of(context).pop();
+    }
   }
 
   Center chooseImageButton(String title) {
@@ -191,7 +202,6 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
     if (pickedFile != null) {
       image = File(pickedFile.path);
       setState(() {});
-      Navigator.of(context).pop();
     }
   }
 }
