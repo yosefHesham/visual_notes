@@ -8,11 +8,12 @@ class VisualNoteField extends StatelessWidget {
       required this.controller,
       required this.validator,
       this.onSubmit,
+      this.maxLines,
       Key? key})
       : super(key: key);
   String? hintText;
   TextEditingController controller;
-
+  int? maxLines = 1;
   void Function(String)? onSubmit;
   String? Function(String?)? validator;
   @override
@@ -20,6 +21,7 @@ class VisualNoteField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
       child: TextFormField(
+        maxLines: maxLines,
         validator: validator,
         controller: controller,
         onFieldSubmitted: onSubmit,
