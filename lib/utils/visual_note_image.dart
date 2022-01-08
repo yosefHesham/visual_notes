@@ -7,7 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
 
 class VisualNoteImage extends StatefulWidget {
+  // this is a callback function to return the picked image back
   Function saveImage;
+  // used in case of editing
   File? image;
   VisualNoteImage(this.saveImage, {Key? key, this.image}) : super(key: key);
 
@@ -15,13 +17,17 @@ class VisualNoteImage extends StatefulWidget {
   _VisualNoteImageState createState() => _VisualNoteImageState();
 }
 
-class _VisualNoteImageState extends State<VisualNoteImage> {
-  File? image;
+File? image;
 
+class _VisualNoteImageState extends State<VisualNoteImage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    image = widget.image;
+    // if its not null => then the user is editing the note
+    // else =>
+    if (widget.image != null) {
+      image = widget.image;
+    }
   }
 
   @override
@@ -34,9 +40,12 @@ class _VisualNoteImageState extends State<VisualNoteImage> {
         border: Border.all(
             width: 1, color: Theme.of(context).colorScheme.secondaryVariant),
       ),
+      // if the image is not set, show a button
       child: image == null
           ? chooseImageButton("Add Photo")
-          : Stack(
+          :
+          // if not show the image and a button above to change it
+          Stack(
               clipBehavior: Clip.none,
               children: [
                 Image.file(
