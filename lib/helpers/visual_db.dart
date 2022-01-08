@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:visual_notes/visual_note_model.dart';
 
@@ -27,9 +26,9 @@ class VisualDBHelper {
     return _database!;
   }
 
-  Future _openDb() async {
+  Future<Database> _openDb() async {
     try {
-      _database = await openDatabase(_path, version: 1,
+      return await openDatabase(_path, version: 1,
           onCreate: (Database db, int version) async {
         await _createTable(db);
       });
@@ -54,12 +53,15 @@ CREATE TABLE  $tableName (
   }
 
   Future<VisualNote> insertNote(VisualNote note) async {
-    note.id = await _database!.insert(tableName, note.toMap());
+    var db = await dbInstance.database;
+    note.id = await db.insert(tableName, note.toMap());
     return note;
   }
 
   Future<List<VisualNote>> getAllNotes() async {
-    List<Map> noteMaps = await _database!.rawQuery("SELECT * from $tableName");
+    var db = await dbInstance.database;
+
+    List<Map> noteMaps = await db.rawQuery("SELECT * from $tableName");
     List<VisualNote> notes = noteMaps
         .map((e) => VisualNote.fromMap(e as Map<String, dynamic>))
         .toList();
@@ -67,14 +69,18 @@ CREATE TABLE  $tableName (
   }
 
   Future<int> deleteNote(int id) async {
-    return await _database!
-        .rawDelete("DELETE FROM $tableName where id = ?", [id]);
+    var db = await dbInstance.database;
+
+    return await db.rawDelete("DELETE FROM $tableName where id = ?", [id]);
   }
 
   Future<void> updateNote(VisualNote note) async {
-    await _database!.update(tableName, note.toMap(),
+    var db = await dbInstance.database;
+
+    await db.update(tableName, note.toMap(),
         where: '$columnId = ?', whereArgs: [note.id]);
   }
 
-  Future close() async => dbInstance.close();
+  Future close() async => await dbInstance.database
+    ..close();
 }

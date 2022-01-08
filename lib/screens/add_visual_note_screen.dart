@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:visual_notes/helpers/sizer_helper.dart';
+import 'package:visual_notes/helpers/visual_db.dart';
 import 'package:visual_notes/helpers/visual_note_validator.dart';
 import 'package:visual_notes/providers/visual_note_provider.dart';
 import 'package:visual_notes/utils/visual_note_field.dart';
@@ -18,6 +19,13 @@ class AddVisualNoteScreen extends StatefulWidget {
 }
 
 class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
+  @override
+  void dispose() async {
+    super.dispose();
+    var db = await VisualDBHelper.dbInstance.database;
+    await db.close();
+  }
+
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   String _status = "Open";
@@ -166,7 +174,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
     return Center(
       child: TextButton.icon(
         onPressed: () {
-          chooseImage();
+          _openCamera();
         },
         icon: const Icon(Icons.add_a_photo),
         label: Text(title),
@@ -174,20 +182,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
     );
   }
 
-  _getFromGallery() async {
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {});
-      Navigator.of(context).pop();
-    }
-  }
-
-  _getFromCamera() async {
+  _openCamera() async {
     XFile? pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
       maxWidth: 1800,
@@ -198,29 +193,5 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
       setState(() {});
       Navigator.of(context).pop();
     }
-  }
-
-  Future<void> chooseImage() async {
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            title: const Text("Choose by"),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  _getFromCamera();
-                },
-                child: Text("Camera"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  _getFromGallery();
-                },
-                child: Text("Gallery"),
-              )
-            ],
-          );
-        });
   }
 }
