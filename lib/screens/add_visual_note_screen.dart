@@ -72,6 +72,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
                           height: 10,
                         ),
                         VisualNoteField(
+                          maxLines: 2,
                           hintText: "Note description",
                           controller: _descriptionController,
                           onSubmit: (_) async {
@@ -152,6 +153,7 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
             title: _titleController.text,
             picture: image!,
             status: _status,
+            dateCreated: DateTime.now().toIso8601String(),
             description: _descriptionController.text),
       );
       Navigator.of(context).pop();

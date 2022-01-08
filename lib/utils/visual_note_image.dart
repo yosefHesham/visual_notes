@@ -19,8 +19,13 @@ class _VisualNoteImageState extends State<VisualNoteImage> {
   File? image;
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     image = widget.image;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final sizer = SizeHelper(context);
     return Container(
       height: sizer.height * .4,
@@ -71,6 +76,7 @@ class _VisualNoteImageState extends State<VisualNoteImage> {
     );
     if (pickedFile != null) {
       image = File(pickedFile.path);
+      widget.saveImage(image);
       setState(() {});
     }
   }

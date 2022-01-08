@@ -74,6 +74,7 @@ class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
                     ),
                     VisualNoteField(
                       hintText: "Note description",
+                      maxLines: 2,
                       controller: _descriptionController,
                       onSubmit: (_) async {
                         VisualNote note = VisualNote(
