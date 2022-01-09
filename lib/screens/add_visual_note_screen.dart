@@ -21,11 +21,6 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   String _status = "Open";
-  File? image;
-
-  void getImage(File img) {
-    image = img;
-  }
 
   final _formKey = GlobalKey<FormState>();
 
@@ -52,11 +47,12 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
           child: SizedBox(
             width: sizer.width,
             child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child:
-                    MediaQuery.of(context).orientation == Orientation.landscape
-                        ? buildLandscape(context, sizer)
-                        : buildPortrait(context, sizer)),
+              padding: const EdgeInsets.all(12.0),
+              // show different layouts based on orientation
+              child: sizer.isLandscape
+                  ? buildLandscape(sizer)
+                  : buildPortrait(sizer),
+            ),
           ),
         ),
       ),
@@ -64,16 +60,18 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   }
 
   /// this is the landscape layout
-  Widget buildLandscape(BuildContext context, SizeHelper sizer) {
+  Widget buildLandscape(SizeHelper sizer) {
     return Column(
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-                child: SizedBox(
-                    height: sizer.height * .6,
-                    child: VisualNoteImage(getImage))),
+              child: SizedBox(
+                height: sizer.height * .6,
+                child: VisualNoteImage(),
+              ),
+            ),
             const SizedBox(
               width: 20,
             ),
@@ -121,11 +119,11 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   }
 
   // portrait layout
-  Column buildPortrait(BuildContext context, SizeHelper sizer) {
+  Column buildPortrait(SizeHelper sizer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        VisualNoteImage(getImage),
+        VisualNoteImage(),
         const SizedBox(
           height: 20,
         ),
@@ -217,17 +215,22 @@ class _AddVisualNoteScreenState extends State<AddVisualNoteScreen> {
   }
 
   Future<void> addNote(BuildContext context) async {
-    // useer cannot submit without choosing an image
-    if (image == null) {
+    /// getting image which is cached into the VisualNoteProvider
+    File? pickedImage =
+        Provider.of<VisualNoteProvider>(context, listen: false).pickedImage;
+
+    // forcing user to pick an image
+    if (pickedImage == null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Please pick an image")));
       return;
     }
     if (_formKey.currentState!.validate()) {
+      // thte actual adding
       await Provider.of<VisualNoteProvider>(context, listen: false).addNote(
         VisualNote(
             title: _titleController.text,
-            picture: image!,
+            picture: pickedImage,
             status: _status,
             dateCreated: DateTime.now().toIso8601String(),
             description: _descriptionController.text),
