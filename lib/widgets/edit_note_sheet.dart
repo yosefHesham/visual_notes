@@ -25,13 +25,7 @@ class EditNoteBottomSheet extends StatefulWidget {
 class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
-  File? image;
-
-  // function to retrieve the captured image by the camera
-  void getImage(File img) {
-    image = img;
-  }
-
+  // ### getting the values of visual note we wante to edit ###
   late String _status = widget.visualNote.status;
 
   late final _titleController =
@@ -39,18 +33,21 @@ class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
 
   late final _descriptionController =
       TextEditingController(text: widget.visualNote.description);
+  // #############                   #################
 
   @override
   Widget build(BuildContext context) {
     final sizer = SizeHelper(context);
 
     return Padding(
+      // avoid keyboard overlaying the screen
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            sizer.isLandscape ? buildLanscape() : buildPortrati(context),
+            // show different layout based on oreintation
+            sizer.isLandscape ? buildLanscape() : buildPortrati(),
             Align(
               alignment: Alignment.center,
               child: SizedBox(
@@ -76,12 +73,11 @@ class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
     );
   }
 
-  Widget buildPortrati(BuildContext context) {
+  Widget buildPortrati() {
     return Column(
       children: [
         VisualNoteImage(
-          getImage,
-          image: widget.visualNote.picture,
+          visualNoteImage: widget.visualNote.picture,
         ),
         Form(
           key: _formKey,
@@ -154,8 +150,7 @@ class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
           child: SizedBox(
             height: sizer.height * .5,
             child: VisualNoteImage(
-              getImage,
-              image: widget.visualNote.picture,
+              visualNoteImage: widget.visualNote.picture,
             ),
           ),
         ),
@@ -227,6 +222,8 @@ class _EditNoteBottomSheetState extends State<EditNoteBottomSheet> {
   }
 
   confirmEdit(BuildContext context) async {
+    File? image =
+        Provider.of<VisualNoteProvider>(context, listen: false).pickedImage;
     if (_formKey.currentState!.validate()) {
       VisualNote note = VisualNote(
           id: widget.visualNote.id,

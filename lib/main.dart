@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<VisualNoteProvider>(
       create: (context) => VisualNoteProvider(),
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Visual Notes',
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
           colorScheme: const ColorScheme(
