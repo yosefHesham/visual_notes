@@ -26,9 +26,12 @@ class _VisualNotesScreenState extends State<VisualNotesScreen> {
   bool isLoading = false;
   @override
   void didChangeDependencies() async {
+    // while fetching the notes, set loading to true to show indicator
     setState(() {
       isLoading = true;
     });
+
+    // fetching notes from DB
     await Provider.of<VisualNoteProvider>(context, listen: false).getAllNotes();
     setState(() {
       isLoading = false;

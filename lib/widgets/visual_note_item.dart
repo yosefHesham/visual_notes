@@ -19,12 +19,16 @@ class VisualNoteItem extends StatelessWidget {
     final sizer = SizeHelper(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
+
+      /// swipe to delete
       child: Dismissible(
         direction: DismissDirection.startToEnd,
         onDismissed: (_) async {
+          // the actual delete happens here
           await deleteItem(context);
         },
         confirmDismiss: (_) async {
+          // confirming delete after a swipe
           return await showConfirmDeleteDialog(context);
         },
         key: UniqueKey(),
@@ -64,7 +68,7 @@ class VisualNoteItem extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              buildVisualNoteDetails(context),
+              Expanded(child: buildVisualNoteDetails(context)),
               const SizedBox(
                 width: 5,
               ),
@@ -106,11 +110,13 @@ class VisualNoteItem extends StatelessWidget {
     );
   }
 
+  // click on image to view it on full screen
   void showPictureInFullScreen(BuildContext context) {
     Navigator.of(context).push(
         MaterialPageRoute(builder: (ctx) => Image.file(visualNote.picture)));
   }
 
+  // show title, description, date created..etc
   Widget buildVisualNoteDetails(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -119,12 +125,14 @@ class VisualNoteItem extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Text(
-          visualNote.title,
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.primaryVariant,
-              fontWeight: FontWeight.bold,
-              fontSize: 22),
+        FittedBox(
+          child: Text(
+            visualNote.title,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primaryVariant,
+                fontWeight: FontWeight.bold,
+                fontSize: 22),
+          ),
         ),
         const SizedBox(
           height: 10,
@@ -215,6 +223,7 @@ class VisualNoteItem extends StatelessWidget {
         context: context);
   }
 
+  // delete function
   Future<void> deleteItem(BuildContext context) async {
     await Provider.of<VisualNoteProvider>(context, listen: false)
         .deleteNote(visualNote);
