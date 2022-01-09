@@ -64,7 +64,7 @@ class VisualNoteItem extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              buildVisualNoteDetails(context),
+              Expanded(child: buildVisualNoteDetails(context)),
               const SizedBox(
                 width: 5,
               ),
@@ -119,12 +119,14 @@ class VisualNoteItem extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Text(
-          visualNote.title,
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.primaryVariant,
-              fontWeight: FontWeight.bold,
-              fontSize: 22),
+        FittedBox(
+          child: Text(
+            visualNote.title,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primaryVariant,
+                fontWeight: FontWeight.bold,
+                fontSize: 22),
+          ),
         ),
         const SizedBox(
           height: 10,
